@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GlideLEARN | Log in or sign up</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ================= ENTRY GATE (full-screen brand moment) ================= -->
+  <div id="gate" class="gate" role="button" tabindex="0" aria-label="Tap anywhere to continue to sign in">
+    <div class="gate-grid" aria-hidden="true"></div>
+    <div class="gate-aurora" aria-hidden="true">
+      <span class="g1"></span><span class="g2"></span><span class="g3"></span><span class="g4"></span>
+    </div>
+
+    <div class="gate-content">
+      <span class="gate-badge">
+        <img src="logo.png" alt="GlideLEARN logo">
+        <span>EDUCATION &amp; GROWTH PLATFORM</span>
+      </span>
+
+      <h1 class="gate-title">Learning finds its<br><span class="grad">shape in the digital age.</span></h1>
+      <p class="gate-lede">
+        Every lesson, resource and person connected in one place —
+        for students, teachers, parents and school management alike.
+      </p>
+    </div>
+
+    <div class="gate-hint">
+      <span class="gate-ring-wrap">
+        <span class="gate-ring-dot"></span>
+      </span>
+      <span class="gate-hint-text">Tap anywhere to begin</span>
+    </div>
+  </div>
+
+  <main class="page">
+
+    <!-- LEFT: visual / brand panel (stays the same across every view) -->
+    <section class="panel-visual" aria-hidden="false">
+      <div class="aurora" aria-hidden="true">
+        <span class="b1"></span>
+        <span class="b2"></span>
+        <span class="b3"></span>
+      </div>
+      <div class="glow"></div>
+
+      <svg class="constellation" viewBox="0 0 420 520" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <g class="links" stroke="#2CA8E0" stroke-width="1" opacity="0.35">
+          <line x1="60"  y1="80"  x2="150" y2="140"/>
+          <line x1="150" y1="140" x2="120" y2="240"/>
+          <line x1="150" y1="140" x2="260" y2="110"/>
+          <line x1="260" y1="110" x2="330" y2="180"/>
+          <line x1="120" y1="240" x2="200" y2="300"/>
+          <line x1="200" y1="300" x2="330" y2="180"/>
+          <line x1="200" y1="300" x2="150" y2="400"/>
+          <line x1="200" y1="300" x2="290" y2="380"/>
+          <line x1="290" y1="380" x2="250" y2="460"/>
+          <line x1="150" y1="400" x2="80"  y2="460"/>
+          <line x1="330" y1="180" x2="380" y2="270"/>
+        </g>
+        <g class="nodes" fill="#E8A33D">
+          <circle cx="60"  cy="80"  r="5"/>
+          <circle cx="150" cy="140" r="7"/>
+          <circle cx="260" cy="110" r="5"/>
+          <circle cx="330" cy="180" r="6"/>
+          <circle cx="120" cy="240" r="4.5"/>
+          <circle cx="200" cy="300" r="8"/>
+          <circle cx="380" cy="270" r="4.5"/>
+          <circle cx="150" cy="400" r="5.5"/>
+          <circle cx="290" cy="380" r="5"/>
+          <circle cx="250" cy="460" r="4.5"/>
+          <circle cx="80"  cy="460" r="4"/>
+        </g>
+        <g class="sparks">
+          <circle class="spark spark--a" r="2.6"/>
+          <circle class="spark spark--b" r="2.2"/>
+          <circle class="spark spark--c" r="2.2"/>
+        </g>
+      </svg>
+
+      <div class="visual-copy">
+        <p class="wordmark">GlideLEARN</p>
+        <h1>Learning finds its shape<br>in the digital age.</h1>
+        <p class="lede">
+          Every lesson, resource and person connected in one place —
+          for students, teachers, parents and school management alike.
+        </p>
+
+        <ul class="perks">
+          <li>Study at your own pace, from any device</li>
+          <li>Track progress across every course you take</li>
+          <li>Reach mentors and classmates without the wait</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- RIGHT: everything else happens here -->
+    <section class="panel-form">
+      <div class="form-shell">
+
+        <img src="logo.png" alt="GlideLEARN — education and growth platform" class="logo">
+
+        <!-- ================= LOGIN VIEW ================= -->
+        <div id="view-login">
+          <header class="form-head">
+            <h2>Welcome back</h2>
+            <p>Log in to pick up where you left off.</p>
+          </header>
+
+          <form id="loginForm" novalidate>
+            <div class="field">
+              <label for="loginId">Login ID or email</label>
+              <input
+                type="text"
+                id="loginId"
+                name="loginId"
+                autocomplete="username"
+                placeholder="STU2026001 or you@example.com"
+                required
+              >
+            </div>
+
+            <div class="field">
+              <label for="loginPasswordField">Password</label>
+              <input
+                type="password"
+                id="loginPasswordField"
+                name="loginPasswordField"
+                autocomplete="current-password"
+                placeholder="Enter your password"
+                required
+              >
+            </div>
+
+            <div class="field field-row">
+              <label class="checkbox">
+                <input type="checkbox" id="remember" name="remember">
+                Remember me
+              </label>
+              <a href="#" id="forgotLink" class="link-muted">Forgot password?</a>
+            </div>
+
+            <button type="submit" id="loginBtn" class="btn-primary">
+              Log in
+            </button>
+
+            <p id="loginStatus" class="status-msg" role="alert" aria-live="polite"></p>
+          </form>
+
+          <p class="demo-hint">
+            Demo account — ID <code>STU2026001</code>, password <code>Passw0rd!</code>
+          </p>
+
+          <footer class="foot-note">
+            New here? <a href="#" id="showRoleView">Create an account</a>
+          </footer>
+        </div>
+
+        <!-- ================= ROLE SELECT VIEW ================= -->
+        <div id="view-role" hidden>
+          <header class="form-head">
+            <h2>Create your account</h2>
+            <p>Tell us who you are, so we can set things up right.</p>
+          </header>
+
+          <div class="role-grid" role="radiogroup" aria-label="Choose account type">
+
+            <label class="role-card">
+              <input type="radio" name="role" id="role-student" value="student" class="role-input">
+              <svg class="role-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M12 3 2 8l10 5 10-5-10-5Z"/>
+                <path d="M6 10.5V16c0 1.5 2.7 3 6 3s6-1.5 6-3v-5.5"/>
+              </svg>
+              <span class="role-name">Student</span>
+              <span class="role-desc">Courses, assignments and progress</span>
+            </label>
+
+            <label class="role-card">
+              <input type="radio" name="role" id="role-teacher" value="teacher" class="role-input">
+              <svg class="role-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M4 5.5c2-1 5-1 8 .5 3-1.5 6-1.5 8-.5v13c-2-1-5-1-8 .5-3-1.5-6-1.5-8-.5V5.5Z"/>
+                <path d="M12 6v13"/>
+              </svg>
+              <span class="role-name">Teacher</span>
+              <span class="role-desc">Classes, subjects and students</span>
+            </label>
+
+            <label class="role-card">
+              <input type="radio" name="role" id="role-parent" value="parent" class="role-input">
+              <svg class="role-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="9" cy="8" r="2.6"/>
+                <path d="M4 19c0-3 2.3-5 5-5s5 2 5 5"/>
+                <circle cx="17" cy="9" r="2"/>
+                <path d="M14.5 19c.3-2.3 1.7-4 3.5-4 2 0 3.5 1.7 3.8 4"/>
+              </svg>
+              <span class="role-name">Parent</span>
+              <span class="role-desc">Follow your child's learning</span>
+            </label>
+
+            <label class="role-card">
+              <input type="radio" name="role" id="role-management" value="management" class="role-input">
+              <svg class="role-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="3" y="8" width="18" height="11" rx="1.6"/>
+                <path d="M8 8V6a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                <path d="M3 13h18"/>
+              </svg>
+              <span class="role-name">Management</span>
+              <span class="role-desc">Oversee school operations</span>
+            </label>
+
+          </div>
+
+          <p id="roleError" class="status-msg" role="alert" aria-live="polite"></p>
+
+          <button type="button" id="continueBtn" class="btn-primary">Continue</button>
+
+          <footer class="foot-note">
+            Already have an account? <a href="#" id="showLoginFromRole">Log in</a>
+          </footer>
+        </div>
+
+        <!-- ================= SIGNUP FORM VIEW (fields injected by JS) ================= -->
+        <div id="view-signup" hidden>
+          <header class="form-head">
+            <h2 id="signupTitle">Create your account</h2>
+            <p id="signupSubtitle">Fill in your details below.</p>
+          </header>
+
+          <form id="signupForm" novalidate>
+            <div id="dynamicFields"><!-- role-specific fields go here --></div>
+
+            <div class="field">
+              <label for="signupPassword">Login password</label>
+              <input type="password" id="signupPassword" name="signupPassword" autocomplete="new-password" required>
+            </div>
+
+            <div class="field">
+              <label for="confirmPassword">Confirm password</label>
+              <input type="password" id="confirmPassword" name="confirmPassword" autocomplete="new-password" required>
+            </div>
+
+            <button type="submit" id="signupBtn" class="btn-primary">Create account</button>
+
+            <p id="signupStatus" class="status-msg" role="alert" aria-live="polite"></p>
+          </form>
+
+          <p class="demo-hint">
+            Your account is saved to the server — you can log back in with the
+            login ID shown after you sign up.
+          </p>
+
+          <footer class="foot-note two-links">
+            <a href="#" id="changeRoleLink">Choose a different role</a>
+            <a href="#" id="showLoginFromSignup">Log in instead</a>
+          </footer>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
