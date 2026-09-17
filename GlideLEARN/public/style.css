@@ -1,0 +1,1404 @@
+/* =========================================================
+   GlideLEARN — style.css (light theme)
+   Sign-in stays a centered two-panel card. Every screen past
+   sign-in (dashboard, courses wizard, SWOT, syllabus, flash
+   cards, progress, streaks) is full-bleed / full-screen via
+   the .page--app modifier. Palette: warm neutrals + the
+   phoenix accent colours (amber -> orange -> cyan -> indigo)
+   used as highlights on a white surface instead of near-black.
+   ========================================================= */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --bg:           #F5F6FB;
+  --panel:        #FFFFFF;
+  --panel-raise:  #F1F3FA;
+  --glass:        rgba(18, 22, 42, 0.035);
+  --glass-strong: rgba(18, 22, 42, 0.07);
+  --line:         rgba(18, 22, 42, 0.10);
+  --line-bright:  rgba(18, 22, 42, 0.20);
+
+  --ink:          #14172B;
+  --muted:        #5B6178;
+  --muted-dim:    #8A90A8;
+
+  --gold:         #E08A00;
+  --gold-deep:    #C96A00;
+  --orange:       #E0553A;
+  --teal:         #0E9CB8;
+  --teal-deep:    #0B7C99;
+  --indigo:       #5352D6;
+  --magenta:      #D63C87;
+
+  --error:        #D6395A;
+  --success:      #1FA97A;
+
+  --radius:       14px;
+  --radius-lg:    22px;
+
+  --font-display: "Fraunces", Georgia, "Times New Roman", serif;
+  --font-body: -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  font-family: var(--font-body);
+  color: var(--ink);
+  line-height: 1.5;
+  background: var(--bg);
+  overflow-x: hidden;
+}
+
+body.gate-locked {
+  overflow: hidden;
+  height: 100vh;
+}
+
+a { color: var(--teal-deep); }
+
+/* ---------- Shared keyframes ---------- */
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes floaty {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-8px); }
+}
+
+/* Bug fix: login-script.js's showView() adds these classes and waits
+   for their "animationend" event before finishing a view switch
+   (login <-> role <-> signup). Without an actual @keyframes animation
+   attached, that event never fires and every view switch hangs
+   forever — this is what makes those transitions work. */
+@keyframes viewLeave {
+  from { opacity: 1; transform: translateY(0); }
+  to   { opacity: 0; transform: translateY(-10px); }
+}
+@keyframes viewEnter {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.view-leave { animation: viewLeave 0.16s ease-in forwards; }
+.view-enter { animation: viewEnter 0.22s ease-out forwards; }
+
+@keyframes shake {
+  10%, 90% { transform: translateX(-1px); }
+  20%, 80% { transform: translateX(2px); }
+  30%, 50%, 70% { transform: translateX(-4px); }
+  40%, 60% { transform: translateX(4px); }
+}
+@keyframes popIn {
+  0%   { opacity: 0; transform: scale(0.85); }
+  70%  { opacity: 1; transform: scale(1.04); }
+  100% { opacity: 1; transform: scale(1); }
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes sheen { to { transform: translateX(220%); } }
+@keyframes barGrow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes pulseFlame {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.12); }
+}
+
+/* Staggered entrance for cards/list items inside a freshly-shown
+   .step-view — same idea as the sign-in form's staggered .field
+   fade-up, applied to every repeating card grid in the app so
+   screens feel like they're assembling rather than just appearing. */
+.dash-tile, .course-row, .option-card, .pill-card, .swot-card,
+.syllabus-block, .flashcard, .chart-card, .streak-card,
+.topic-quiz-block, .quiz-question {
+  animation: fadeUp 0.5s ease-out both;
+}
+.dash-tile:nth-child(2), .course-row:nth-child(2), .option-card:nth-child(2),
+.pill-card:nth-child(2), .swot-card:nth-child(2), .syllabus-block:nth-child(2),
+.flashcard:nth-child(2), .chart-card:nth-child(2), .streak-card:nth-child(2),
+.quiz-question:nth-child(2) { animation-delay: 0.06s; }
+.dash-tile:nth-child(3), .course-row:nth-child(3), .option-card:nth-child(3),
+.pill-card:nth-child(3), .swot-card:nth-child(3), .syllabus-block:nth-child(3),
+.flashcard:nth-child(3), .chart-card:nth-child(3), .streak-card:nth-child(3),
+.quiz-question:nth-child(3) { animation-delay: 0.12s; }
+.dash-tile:nth-child(4), .course-row:nth-child(4), .option-card:nth-child(4),
+.pill-card:nth-child(4), .swot-card:nth-child(4), .syllabus-block:nth-child(4),
+.flashcard:nth-child(4), .chart-card:nth-child(4), .quiz-question:nth-child(4) { animation-delay: 0.18s; }
+.dash-tile:nth-child(5), .course-row:nth-child(5), .option-card:nth-child(5),
+.pill-card:nth-child(5), .swot-card:nth-child(5), .syllabus-block:nth-child(5),
+.flashcard:nth-child(5), .quiz-question:nth-child(5) { animation-delay: 0.24s; }
+.dash-tile:nth-child(6), .course-row:nth-child(6), .option-card:nth-child(6),
+.pill-card:nth-child(6), .syllabus-block:nth-child(6),
+.flashcard:nth-child(6) { animation-delay: 0.3s; }
+.topic-quiz-block { animation-delay: 0.04s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .dash-tile, .course-row, .option-card, .pill-card, .swot-card,
+  .syllabus-block, .flashcard, .chart-card, .streak-card,
+  .topic-quiz-block, .quiz-question, .view-enter, .view-leave,
+  .gate-badge, .gate-badge img, .gate-title, .gate-title .grad,
+  .gate-lede, .gate-hint, .gate-ring-wrap::before, .gate-aurora span,
+  .gate-grid, .logo, .field, .role-card, .btn-primary::after,
+  .btn-secondary::after {
+    animation: none !important;
+  }
+}
+
+/* =========================================================
+   ENTRY GATE (sign-in page only — full-screen brand splash)
+   ========================================================= */
+
+.gate {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 26px;
+  padding: 40px 24px;
+  background: linear-gradient(160deg, #FFFDF7 0%, #FFF6EA 35%, #EFF7FB 100%);
+  cursor: pointer;
+}
+
+/* Bug fix: the native [hidden] attribute is supposed to force
+   display:none, but it has the same specificity as the .gate class
+   rule above and author styles win specificity ties against the
+   browser's default UA stylesheet — so without this rule, setting
+   gate.hidden = true in JS left the full-screen overlay invisible
+   but still in the layout, silently swallowing every click on the
+   page underneath it. This rule (two selectors > one) guarantees
+   [hidden] actually wins. */
+.gate[hidden] {
+  display: none;
+}
+
+.gate-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(18,22,42,0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(18,22,42,0.05) 1px, transparent 1px);
+  background-size: 42px 42px;
+  mask-image: radial-gradient(circle at 50% 40%, black, transparent 75%);
+  animation: gridDrift 40s linear infinite;
+}
+@keyframes gridDrift {
+  to { background-position: 84px 84px; }
+}
+
+.gate-aurora span {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: 0.35;
+  animation: floaty 9s ease-in-out infinite, auroraDrift 15s ease-in-out infinite;
+}
+@keyframes auroraDrift {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50%      { transform: translate(16px, -12px) scale(1.1); }
+}
+.gate-aurora .g1 { width: 380px; height: 380px; left: -80px; top: -80px; background: var(--gold); }
+.gate-aurora .g2 { width: 320px; height: 320px; right: -60px; top: 10%; background: var(--teal); animation-delay: -3s; }
+.gate-aurora .g3 { width: 300px; height: 300px; left: 10%; bottom: -100px; background: var(--indigo); animation-delay: -6s; }
+.gate-aurora .g4 { width: 260px; height: 260px; right: 15%; bottom: -80px; background: var(--orange); animation-delay: -1.5s; }
+
+.gate-content {
+  position: relative;
+  z-index: 1;
+  max-width: 640px;
+}
+
+.gate-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: var(--glass-strong);
+  border: 1px solid var(--line);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  margin-bottom: 22px;
+  animation: fadeUp 0.6s ease-out both;
+}
+.gate-badge img { height: 22px; animation: floaty 5s ease-in-out infinite; }
+
+.gate-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  line-height: 1.15;
+  color: var(--ink);
+  animation: fadeUp 0.6s ease-out 0.1s both;
+}
+.gate-title .grad {
+  background: linear-gradient(90deg, var(--gold-deep), var(--orange), var(--teal-deep), var(--gold-deep));
+  background-size: 300% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: shimmerText 6s linear infinite;
+}
+@keyframes shimmerText {
+  to { background-position: -300% center; }
+}
+
+.gate-lede {
+  margin-top: 18px;
+  color: var(--muted);
+  font-size: 1.02rem;
+  max-width: 480px;
+  margin-left: auto;
+  margin-right: auto;
+  animation: fadeUp 0.6s ease-out 0.2s both;
+}
+
+.gate-hint {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--muted-dim);
+  font-size: 0.82rem;
+  animation: fadeUp 0.6s ease-out 0.32s both;
+}
+
+.gate-ring-wrap {
+  position: relative;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 1px solid var(--line-bright);
+}
+.gate-ring-wrap::before {
+  content: "";
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 1px solid var(--gold-deep);
+  animation: ringPing 1.8s ease-out infinite;
+}
+@keyframes ringPing {
+  0%   { transform: scale(0.6); opacity: 0.7; }
+  100% { transform: scale(1.9); opacity: 0; }
+}
+.gate-ring-dot {
+  position: absolute;
+  inset: 3px;
+  border-radius: 50%;
+  background: var(--gold-deep);
+  animation: floaty 1.6s ease-in-out infinite;
+}
+
+/* Bug fix: login-script.js adds this class on tap/click and waits for
+   its "animationend" event before hiding the gate (gate.hidden = true).
+   This animation was missing entirely, so the event never fired and
+   the gate silently stayed on screen forever, blocking every tap —
+   it only ever appeared to work in quick manual/automated tests that
+   happened to tap while an unrelated intro animation on a child
+   element was still finishing and bubbling its own animationend up to
+   this listener; a real user who pauses even a couple seconds before
+   tapping hit the hang every time. pointer-events:none is a second,
+   independent safety net so the gate can never block taps again even
+   if some future change breaks this animation the same way. */
+.gate.gate-exit {
+  animation: gateExit 0.45s ease-in forwards;
+  pointer-events: none;
+}
+@keyframes gateExit {
+  from { clip-path: circle(150% at var(--x, 50%) var(--y, 50%)); opacity: 1; }
+  to   { clip-path: circle(0% at var(--x, 50%) var(--y, 50%)); opacity: 0; }
+}
+
+/* =========================================================
+   PAGE SHELL
+   .page       — the sign-in card (centered, fixed max-width)
+   .page--app  — every other screen: full-bleed, full height
+   ========================================================= */
+
+.page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  background: var(--bg);
+}
+
+/* ---- Sign-in: centered two-panel card (the <main class="page">
+   element itself is the card — no extra wrapper needed in HTML) ---- */
+.page:not(.page--app) {
+  display: flex;
+  align-items: stretch;
+  max-width: 1040px;
+  min-height: 640px;
+  margin: 40px auto;
+  background: var(--panel);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--line);
+  box-shadow: 0 30px 80px -30px rgba(18, 22, 42, 0.25);
+  overflow: hidden;
+}
+
+/* ---- App pages: no card, no shadow, edge-to-edge ---- */
+.page.page--app {
+  display: block;
+  min-height: 100vh;
+  padding: 0;
+  margin: 0;
+  max-width: none;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  background: var(--bg);
+}
+
+/* ---------- Left visual / brand panel (sign-in only) ---------- */
+
+.panel-visual {
+  position: relative;
+  width: 42%;
+  flex-shrink: 0;
+  background: linear-gradient(165deg, #12172B 0%, #1B2140 55%, #0E1830 100%);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 48px 40px;
+  border-right: 1px solid var(--line);
+}
+
+.page.page--solo .panel-visual {
+  width: 0;
+  padding: 0;
+  border-right: none;
+  overflow: hidden;
+}
+
+.aurora span {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(70px);
+  opacity: 0.5;
+}
+.aurora .b1 { width: 260px; height: 260px; left: -60px; top: -40px; background: var(--gold); }
+.aurora .b2 { width: 220px; height: 220px; right: -40px; top: 30%; background: var(--teal); }
+.aurora .b3 { width: 240px; height: 240px; left: 10%; bottom: -80px; background: var(--indigo); }
+
+.glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 30% 20%, rgba(255,255,255,0.08), transparent 60%);
+}
+
+.constellation {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.6;
+}
+
+.visual-copy { position: relative; z-index: 1; color: #F4F5FA; }
+.visual-copy .wordmark {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: #FFD79A;
+  margin-bottom: 14px;
+}
+.visual-copy h1 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 2rem;
+  line-height: 1.2;
+  margin-bottom: 16px;
+}
+.visual-copy .lede {
+  color: rgba(244,245,250,0.75);
+  margin-bottom: 20px;
+  max-width: 360px;
+}
+.visual-copy .perks {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: rgba(244,245,250,0.65);
+  font-size: 0.9rem;
+}
+.visual-copy .perks li::before { content: "✦ "; color: var(--gold); }
+
+/* ---------- Right form panel ---------- */
+
+.panel-form {
+  flex: 1;
+  display: flex;
+  padding: 48px 40px;
+  overflow-y: auto;
+}
+
+.page.page--app .panel-form {
+  display: block;
+  padding: 0;
+  min-height: 100vh;
+}
+
+.form-shell {
+  width: 100%;
+  max-width: 420px;
+  /* Bug fix: this used to be centered via align-items/justify-content
+     on the flex parent above. That centers correctly for short content
+     (the login form) but, when the role-select or signup view is
+     taller than the panel, clips the overflow off the TOP instead of
+     making it scrollable — the classic flex-centering-plus-overflow
+     trap. margin:auto on the child centers it when it fits and
+     degrades to a normal top-aligned, scrollable flow when it
+     doesn't, so tall content is always fully reachable. */
+  margin: auto;
+}
+
+.page.page--app .form-shell {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 32px clamp(20px, 4vw, 56px) 64px;
+}
+
+/* Role-select and signup are taller than the login form. Vertically
+   centering them (via the .form-shell margin:auto above) leaves a
+   huge, odd-looking blank gap above the content on those views —
+   top-align instead so they read like a normal form the moment they
+   appear. :not(.page--app) keeps this from fighting the rule above
+   on study-planner, which is page--solo AND page--app together. */
+.page.page--solo:not(.page--app) .form-shell {
+  margin: 48px auto;
+}
+
+.logo {
+  height: 30px;
+  margin-bottom: 28px;
+  animation: fadeUp 0.5s ease-out 0.1s backwards;
+}
+
+.form-head { margin-bottom: 22px; }
+.form-head h2 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.5rem;
+  margin-bottom: 6px;
+}
+.form-head p { color: var(--muted); font-size: 0.92rem; }
+
+/* ---------- Buttons ---------- */
+
+.btn-primary,
+.btn-secondary {
+  font-family: inherit;
+  font-size: 0.92rem;
+  font-weight: 700;
+  padding: 12px 22px;
+  border-radius: var(--radius);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+
+.btn-primary {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(90deg, var(--gold-deep), var(--orange));
+  color: #FFF9EF;
+  box-shadow: 0 10px 24px -10px rgba(224, 85, 58, 0.45);
+}
+.btn-primary::after {
+  content: "";
+  position: absolute;
+  top: 0; left: -60%;
+  width: 40%; height: 100%;
+  background: linear-gradient(120deg, transparent, rgba(255,255,255,0.55), transparent);
+  transform: translateX(0);
+  pointer-events: none;
+}
+.btn-primary:hover:not(:disabled)::after { animation: sheen 0.7s ease; }
+.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 14px 28px -10px rgba(224, 85, 58, 0.5); }
+.btn-primary:active:not(:disabled) { transform: translateY(0) scale(0.98); }
+.btn-primary:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+
+.btn-ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.55);
+  transform: scale(0);
+  animation: rippleExpand 0.55s ease-out forwards;
+  pointer-events: none;
+}
+.btn-secondary .btn-ripple { background: rgba(18,22,42,0.12); }
+@keyframes rippleExpand {
+  to { transform: scale(1); opacity: 0; }
+}
+
+.btn-secondary {
+  position: relative;
+  overflow: hidden;
+  background: var(--panel);
+  color: var(--ink);
+  border-color: var(--line-bright);
+}
+.btn-secondary::after {
+  content: "";
+  position: absolute;
+  top: 0; left: -60%;
+  width: 40%; height: 100%;
+  background: linear-gradient(120deg, transparent, rgba(18,22,42,0.06), transparent);
+  pointer-events: none;
+}
+.btn-secondary:hover:not(:disabled)::after { animation: sheen 0.7s ease; }
+.btn-secondary:hover { background: var(--glass); transform: translateY(-1px); box-shadow: 0 10px 22px -16px rgba(18,22,42,0.25); }
+.btn-secondary:active:not(:disabled) { transform: translateY(0) scale(0.98); }
+
+.btn-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.link-muted {
+  color: var(--muted);
+  text-decoration: underline;
+  font-size: 0.88rem;
+}
+.account-link { color: var(--teal-deep); }
+
+/* ---------- Forms / inputs ---------- */
+
+.field { margin-bottom: 16px; animation: fadeUp 0.45s ease-out both; }
+.field:nth-of-type(1) { animation-delay: 0.05s; }
+.field:nth-of-type(2) { animation-delay: 0.1s; }
+.field:nth-of-type(3) { animation-delay: 0.15s; }
+.field:nth-of-type(4) { animation-delay: 0.2s; }
+.field:nth-of-type(5) { animation-delay: 0.25s; }
+.field:nth-of-type(6) { animation-delay: 0.3s; }
+.field:nth-of-type(n+7) { animation-delay: 0.32s; }
+.field label {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+.field input,
+.field select,
+.field textarea {
+  width: 100%;
+  padding: 11px 12px;
+  font-size: 0.94rem;
+  font-family: inherit;
+  color: var(--ink);
+  background: var(--panel-raise);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  outline: none;
+  border-color: var(--teal);
+  box-shadow: 0 0 0 3px rgba(14, 156, 184, 0.16);
+  background: var(--panel);
+}
+
+/* Password show/hide toggle (injected by login-script.js's
+   enhancePasswordField). Missing entirely from the first pass of
+   this rewrite: the toggle button had no positioning, so it rendered
+   as a tiny stray unstyled button below the field, and both the eye
+   / eye-off icons showed at once with no CSS to switch between them
+   based on the button's aria-pressed state. */
+.input-wrap {
+  position: relative;
+}
+.input-wrap input {
+  padding-right: 40px;
+}
+.pw-toggle {
+  position: absolute;
+  top: 50%;
+  right: 6px;
+  transform: translateY(-50%);
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+  border-radius: 8px;
+}
+.pw-toggle:hover { color: var(--teal-deep); background: var(--glass-strong); }
+.pw-toggle svg { width: 18px; height: 18px; }
+.pw-toggle .icon-eye-off { display: none; }
+.pw-toggle[aria-pressed="true"] .icon-eye { display: none; }
+.pw-toggle[aria-pressed="true"] .icon-eye-off { display: block; }
+
+.status-msg {
+  margin-top: 14px;
+  padding: 10px 14px;
+  border-radius: var(--radius);
+  font-size: 0.86rem;
+}
+.status-msg.error   { background: rgba(214, 57, 90, 0.10); color: var(--error); animation: shake 0.4s ease; }
+.status-msg.success { background: rgba(31, 169, 122, 0.10); color: var(--success); animation: popIn 0.4s ease; }
+.status-msg:empty { display: none; }
+
+/* AI "generating…" states — a small spinning ring before the text
+   (toggled via .is-loading in planner-script.js) so a wait reads as
+   "working", not "stuck". */
+.loading-note, .ai-note.is-loading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.loading-note::before, .ai-note.is-loading::before {
+  content: "";
+  width: 14px; height: 14px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  border: 2px solid var(--line-bright);
+  border-top-color: var(--teal-deep);
+  animation: spin 0.7s linear infinite;
+}
+
+/* ---------- Role grid (signup) ---------- */
+
+.role-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin: 18px 0 6px;
+}
+.role-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 16px;
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  background: var(--panel-raise);
+  cursor: pointer;
+  text-align: left;
+  position: relative;
+  animation: fadeUp 0.45s ease-out both;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+}
+.role-card:nth-child(1) { animation-delay: 0.05s; }
+.role-card:nth-child(2) { animation-delay: 0.1s; }
+.role-card:nth-child(3) { animation-delay: 0.15s; }
+.role-card:nth-child(4) { animation-delay: 0.2s; }
+.role-card:hover {
+  border-color: var(--line-bright);
+  background: var(--glass-strong);
+  transform: translateY(-2px);
+  box-shadow: 0 14px 30px -20px rgba(18,22,42,0.28);
+}
+.role-input { position: absolute; opacity: 0; pointer-events: none; }
+.role-icon { width: 22px; height: 22px; color: var(--teal-deep); margin-bottom: 4px; transition: transform 0.2s ease, color 0.15s ease; }
+.role-card:hover .role-icon { transform: scale(1.15) rotate(-4deg); }
+.role-name { font-size: 0.95rem; font-weight: 700; }
+.role-desc { font-size: 0.8rem; color: var(--muted); }
+.role-card:has(.role-input:checked) {
+  border-color: var(--gold-deep);
+  background: rgba(224, 138, 0, 0.08);
+  box-shadow: 0 0 0 3px rgba(224, 138, 0, 0.16);
+  animation: fadeUp 0.45s ease-out both, popIn 0.3s ease-out;
+}
+.role-card:has(.role-input:checked) .role-icon { color: var(--gold-deep); }
+
+.field-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.86rem;
+  color: var(--muted);
+  cursor: pointer;
+}
+.checkbox input { accent-color: var(--teal-deep); }
+
+.demo-hint {
+  margin-top: 16px;
+  font-size: 0.8rem;
+  color: var(--muted-dim);
+  text-align: center;
+}
+.demo-hint code {
+  background: var(--panel-raise);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 1px 6px;
+  font-size: 0.78rem;
+}
+
+.foot-note {
+  margin-top: 20px;
+  font-size: 0.86rem;
+  color: var(--muted);
+  text-align: center;
+}
+.foot-note.two-links {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+/* =========================================================
+   ACCOUNT BAR (top of every app page)
+   ========================================================= */
+
+.app-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px clamp(20px, 4vw, 56px);
+  border-bottom: 1px solid var(--line);
+  background: var(--panel);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+.app-topbar .logo { height: 24px; margin: 0; }
+.account-bar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.account-name { font-size: 0.86rem; color: var(--muted); }
+.account-actions { display: flex; align-items: center; gap: 14px; }
+.account-link, .account-actions .account-link {
+  background: none; border: none; padding: 0; font: inherit; cursor: pointer;
+}
+
+/* =========================================================
+   DASHBOARD
+   ========================================================= */
+
+.dashboard-hero {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 8px 0 4px;
+}
+.avatar-circle {
+  width: 60px; height: 60px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-display); font-weight: 600; font-size: 1.4rem;
+  color: #fff;
+  background: linear-gradient(135deg, var(--gold-deep), var(--orange), var(--indigo));
+  flex-shrink: 0;
+  animation: fadeUp 0.5s ease-out both, floaty 6s ease-in-out 0.5s infinite;
+}
+.dashboard-hero h1 {
+  font-family: var(--font-display); font-weight: 600; font-size: 1.5rem;
+}
+.dashboard-hero p { color: var(--muted); font-size: 0.9rem; }
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  margin-top: 26px;
+}
+
+.dash-tile {
+  text-align: left;
+  padding: 22px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--line);
+  background: var(--panel);
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+.dash-tile:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 40px -22px rgba(18,22,42,0.25);
+  border-color: var(--line-bright);
+}
+.dash-tile-icon {
+  width: 42px; height: 42px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 14px;
+  color: #fff;
+}
+.dash-tile-icon svg { width: 22px; height: 22px; }
+.dash-tile.tile-courses  .dash-tile-icon { background: linear-gradient(135deg, var(--teal), var(--teal-deep)); }
+.dash-tile.tile-progress .dash-tile-icon { background: linear-gradient(135deg, var(--indigo), var(--magenta)); }
+.dash-tile.tile-streak   .dash-tile-icon { background: linear-gradient(135deg, var(--gold-deep), var(--orange)); }
+
+.dash-tile h3 { font-size: 1.05rem; margin-bottom: 4px; }
+.dash-tile p { color: var(--muted); font-size: 0.86rem; }
+.dash-tile .dash-tile-metric {
+  margin-top: 14px; font-family: var(--font-display); font-size: 1.6rem; font-weight: 600;
+}
+.dash-tile .dash-tile-metric span { font-size: 0.95rem; color: var(--muted); font-family: var(--font-body); font-weight: 400; }
+.count-num { font-variant-numeric: tabular-nums; }
+
+.course-list {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.course-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  background: var(--panel);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+.course-row:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 30px -20px rgba(18,22,42,0.25);
+  border-color: var(--line-bright);
+}
+.course-row .course-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.course-row .course-name { flex: 1; font-weight: 600; font-size: 0.92rem; }
+.course-row .course-bar-track {
+  width: 140px; height: 8px; border-radius: 999px; background: var(--panel-raise); overflow: hidden;
+}
+.course-row .course-bar-fill {
+  height: 100%; border-radius: 999px;
+  transform-origin: left;
+  animation: barGrow 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.course-row .course-pct { width: 42px; text-align: right; font-size: 0.82rem; color: var(--muted); }
+
+.section-heading {
+  font-family: var(--font-display); font-weight: 600; font-size: 1.1rem; margin: 30px 0 4px;
+}
+.section-sub { color: var(--muted); font-size: 0.88rem; margin-bottom: 10px; }
+
+/* =========================================================
+   PROGRESS BAR (wizard steps)
+   ========================================================= */
+
+.progress-track {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 26px;
+}
+.progress-bar {
+  flex: 1;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--panel-raise);
+  overflow: hidden;
+}
+.progress-bar > span {
+  display: block;
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--gold-deep), var(--teal));
+  transition: width 0.3s ease;
+}
+.step-label {
+  font-size: 0.72rem;
+  color: var(--muted-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 10px;
+}
+
+/* =========================================================
+   OPTION GRID (subject / unit / topic choices)
+   ========================================================= */
+
+.option-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin: 18px 0 6px;
+}
+.option-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 16px;
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  background: var(--panel);
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+.option-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 30px -20px rgba(18,22,42,0.28);
+  border-color: var(--line-bright);
+}
+.option-card .option-icon { transition: transform 0.15s ease; }
+.option-card:hover .option-icon { transform: scale(1.1); }
+.option-input { position: absolute; opacity: 0; pointer-events: none; }
+.option-icon { width: 22px; height: 22px; color: var(--subj-color, var(--teal)); }
+.option-name { font-size: 0.92rem; font-weight: 700; color: var(--ink); }
+
+.option-card:has(.option-input:checked) {
+  border-color: var(--subj-color, var(--gold-deep));
+  background: color-mix(in srgb, var(--subj-color, var(--gold)) 8%, white);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--subj-color, var(--gold)) 22%, transparent);
+}
+.option-card:has(.option-input:checked) .option-icon { color: var(--subj-color, var(--gold-deep)); }
+.option-card:has(.option-input:focus-visible) { outline: 2px solid var(--teal); outline-offset: 2px; }
+
+.pill-grid { display: flex; flex-wrap: wrap; gap: 10px; margin: 18px 0 6px; }
+.pill-card {
+  padding: 10px 18px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  cursor: pointer;
+  font-size: 0.88rem;
+  font-weight: 600;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+.pill-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 22px -16px rgba(18,22,42,0.3);
+  border-color: var(--line-bright);
+}
+.pill-card:has(.option-input:checked) {
+  border-color: var(--gold-deep);
+  background: rgba(224, 138, 0, 0.10);
+  color: var(--gold-deep);
+}
+
+/* ---------- Custom duration ---------- */
+
+.custom-duration { margin-top: 16px; }
+.custom-duration label {
+  display: block; font-size: 0.82rem; font-weight: 600; color: var(--muted); margin-bottom: 6px;
+}
+.custom-duration-row { display: flex; gap: 10px; }
+
+.number-stepper { position: relative; flex: 1; min-width: 0; display: flex; }
+.custom-duration-row input[type="number"] {
+  flex: 1; min-width: 0; padding: 10px 34px 10px 12px;
+  font-size: 0.92rem; font-family: inherit; color: var(--ink);
+  border: 1px solid var(--line); border-radius: var(--radius);
+  background: var(--panel-raise);
+  -moz-appearance: textfield; appearance: textfield;
+}
+.custom-duration-row input[type="number"]::-webkit-outer-spin-button,
+.custom-duration-row input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none; margin: 0;
+}
+.stepper-btns { position: absolute; right: 4px; top: 4px; bottom: 4px; display: flex; flex-direction: column; width: 24px; }
+.stepper-btn {
+  flex: 1; display: flex; align-items: center; justify-content: center;
+  border: none; background: transparent; color: var(--muted); cursor: pointer;
+  padding: 0; border-radius: 4px; line-height: 1;
+}
+.stepper-btn:hover { color: var(--teal-deep); background: var(--glass-strong); }
+.stepper-btn svg { width: 11px; height: 11px; pointer-events: none; }
+
+.custom-duration-row select {
+  padding: 10px 32px 10px 12px; font-size: 0.92rem; font-family: inherit;
+  border: 1px solid var(--line); border-radius: var(--radius);
+  background-color: var(--panel-raise); color: var(--ink);
+  -webkit-appearance: none; -moz-appearance: none; appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235B6178' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 10px center; background-size: 14px;
+}
+.custom-duration-row select option { background: var(--panel); color: var(--ink); }
+.custom-duration-row input::placeholder { color: var(--muted-dim); }
+.custom-duration-row input:focus,
+.custom-duration-row select:focus {
+  outline: none; border-color: var(--teal); box-shadow: 0 0 0 3px rgba(14, 156, 184, 0.16);
+}
+
+.ai-notes-field { margin-top: 18px; }
+.ai-notes-field label { display: block; font-size: 0.82rem; font-weight: 600; color: var(--muted); margin-bottom: 6px; }
+.ai-notes-field textarea {
+  width: 100%; min-height: 72px; padding: 10px 12px; font-family: inherit; font-size: 0.9rem;
+  color: var(--ink); background: var(--panel-raise); border: 1px solid var(--line); border-radius: var(--radius); resize: vertical;
+}
+.ai-note { font-size: 0.82rem; color: var(--muted-dim); margin: 10px 0 0; }
+
+/* =========================================================
+   TOPIC QUIZ
+   ========================================================= */
+
+.topic-quiz-block {
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--panel);
+  margin-bottom: 16px;
+}
+.topic-quiz-block h3 {
+  font-size: 0.98rem;
+  margin-bottom: 4px;
+}
+.topic-quiz-block .topic-progress {
+  font-size: 0.78rem; color: var(--muted); margin-bottom: 14px;
+}
+.quiz-question { margin-bottom: 18px; }
+.quiz-question p.q-text { font-weight: 600; margin-bottom: 10px; font-size: 0.94rem; }
+.quiz-options { display: flex; flex-direction: column; gap: 8px; }
+.quiz-option {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px; border-radius: var(--radius);
+  border: 1px solid var(--line); background: var(--panel-raise); cursor: pointer; font-size: 0.9rem;
+  transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+}
+.quiz-option:hover { border-color: var(--line-bright); transform: translateX(2px); }
+.quiz-option:has(input:checked) {
+  border-color: var(--teal);
+  background: rgba(14,156,184,0.08);
+  box-shadow: 0 0 0 2px rgba(14,156,184,0.14);
+  animation: optionPick 0.3s ease-out;
+}
+@keyframes optionPick {
+  0%   { transform: scale(0.98); }
+  60%  { transform: scale(1.015); }
+  100% { transform: scale(1); }
+}
+.quiz-option input { accent-color: var(--teal-deep); }
+.quiz-option.correct { border-color: var(--success); background: rgba(31,169,122,0.10); animation: popIn 0.35s ease-out; }
+.quiz-option.incorrect { border-color: var(--error); background: rgba(214,57,90,0.10); animation: shake 0.4s ease; }
+
+/* =========================================================
+   SWOT
+   ========================================================= */
+
+.swot-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin: 20px 0;
+}
+.swot-card {
+  padding: 18px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--line);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.swot-card:hover { transform: translateY(-2px); box-shadow: 0 18px 36px -24px rgba(18,22,42,0.3); }
+.swot-card h3 { font-size: 0.92rem; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+.swot-card ul { list-style: none; display: flex; flex-direction: column; gap: 7px; font-size: 0.88rem; }
+.swot-card li::before { content: "— "; color: var(--muted-dim); }
+.swot-strengths     { background: rgba(31,169,122,0.06); border-color: rgba(31,169,122,0.25); }
+.swot-weaknesses    { background: rgba(214,57,90,0.06);  border-color: rgba(214,57,90,0.25); }
+.swot-opportunities { background: rgba(14,156,184,0.06); border-color: rgba(14,156,184,0.25); }
+.swot-threats       { background: rgba(224,138,0,0.07);  border-color: rgba(224,138,0,0.3); }
+
+/* Topic focus map (visual representation of SWOT-weighted topics) */
+.focus-map { display: flex; flex-direction: column; gap: 10px; margin: 16px 0 22px; }
+.focus-row { display: flex; align-items: center; gap: 12px; }
+.focus-row .focus-label { width: 180px; flex-shrink: 0; font-size: 0.86rem; font-weight: 600; }
+.focus-row .focus-track { flex: 1; height: 10px; border-radius: 999px; background: var(--panel-raise); overflow: hidden; }
+.focus-row .focus-fill {
+  height: 100%; border-radius: 999px;
+  transform-origin: left;
+  animation: barGrow 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.focus-row .focus-pct { width: 40px; text-align: right; font-size: 0.8rem; color: var(--muted); }
+
+/* =========================================================
+   SYLLABUS / RESULTS
+   ========================================================= */
+
+.level-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 8px 16px; border-radius: 999px; font-weight: 700; font-size: 0.86rem;
+  background: var(--panel-raise); margin-bottom: 16px;
+}
+.syllabus-list { display: flex; flex-direction: column; gap: 12px; }
+.syllabus-block {
+  padding: 14px 16px; border-radius: var(--radius); border: 1px solid var(--line); background: var(--panel);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+.syllabus-block:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 30px -20px rgba(18,22,42,0.25);
+  border-color: var(--line-bright);
+}
+.syllabus-block h3 { font-size: 0.95rem; margin-bottom: 6px; }
+.syllabus-block ul { padding-left: 18px; font-size: 0.88rem; color: var(--ink); }
+.syllabus-block li { margin-bottom: 4px; }
+
+/* =========================================================
+   FLASHCARDS
+   ========================================================= */
+
+.flashcard-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 18px 0;
+}
+.flashcard {
+  perspective: 1200px;
+  -webkit-perspective: 1200px;
+  height: 160px;
+  cursor: pointer;
+}
+.flashcard:hover:not(.flipped) .flashcard-inner { transform: rotateY(-8deg) scale(1.02); }
+.flashcard-inner {
+  position: relative; width: 100%; height: 100%;
+  transition: transform 0.5s;
+  transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
+  will-change: transform;
+}
+/* Debug note: the flip previously showed both faces superimposed
+   ("mirrored/messy" text) because backface-visibility and
+   transform-style were only declared unprefixed. Several current
+   mobile/embedded WebKit builds still need the -webkit- prefix to
+   actually hide the reverse face in a 3D transform — without it the
+   browser renders the flip "flat", so the rotated back face's text
+   sits right on top of the front face's text instead of being
+   hidden until it rotates into view. */
+.flashcard.flipped .flashcard-inner {
+  transform: rotateY(180deg);
+  -webkit-transform: rotateY(180deg);
+}
+.flashcard-face {
+  position: absolute; inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border-radius: var(--radius-lg); border: 1px solid var(--line);
+  display: flex; align-items: center; justify-content: center;
+  padding: 16px; text-align: center; font-size: 0.9rem;
+  box-shadow: 0 10px 24px -18px rgba(18,22,42,0.35);
+}
+.flashcard-front {
+  background: var(--panel);
+  transform: rotateY(0deg);
+  -webkit-transform: rotateY(0deg);
+}
+.flashcard-back {
+  background: linear-gradient(135deg, rgba(14,156,184,0.10), rgba(83,82,214,0.10));
+  transform: rotateY(180deg);
+  -webkit-transform: rotateY(180deg);
+  font-weight: 600;
+}
+
+/* =========================================================
+   PROGRESS CHARTS
+   ========================================================= */
+
+.chart-card {
+  padding: 20px; border-radius: var(--radius-lg); border: 1px solid var(--line); background: var(--panel); margin-bottom: 18px;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.chart-card:hover { transform: translateY(-2px); box-shadow: 0 18px 36px -24px rgba(18,22,42,0.3); }
+.chart-card h3 { font-size: 1rem; margin-bottom: 4px; }
+.chart-card .chart-insight { font-size: 0.86rem; color: var(--muted); margin-top: 12px; }
+
+.line-graph { margin-top: 14px; }
+.line-graph svg { width: 100%; height: 140px; display: block; overflow: visible; }
+.line-graph-line {
+  fill: none;
+  stroke: var(--teal-deep);
+  stroke-width: 2.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 900;
+  stroke-dashoffset: 900;
+  animation: drawLine 1s ease-out forwards;
+}
+.line-graph-area {
+  opacity: 0;
+  animation: fadeIn 0.6s ease-out 0.7s forwards;
+}
+.line-graph-dot {
+  fill: var(--panel);
+  stroke: var(--teal-deep);
+  stroke-width: 2.4;
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: popIn 0.35s ease-out both;
+}
+.line-graph-dot:hover { fill: var(--teal-deep); cursor: pointer; }
+.line-graph-ticks {
+  display: flex; justify-content: space-between;
+  font-size: 0.72rem; color: var(--muted); margin-top: 4px; padding: 0 2px;
+}
+@keyframes drawLine { to { stroke-dashoffset: 0; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .line-graph-line, .line-graph-area, .line-graph-dot { animation: none !important; stroke-dashoffset: 0; opacity: 1; }
+}
+
+.progress-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
+
+/* =========================================================
+   STREAKS
+   ========================================================= */
+
+.streak-tabs { display: flex; gap: 8px; margin: 18px 0; flex-wrap: wrap; }
+.streak-tab-btn {
+  padding: 8px 16px; border-radius: 999px; border: 1px solid var(--line); background: var(--panel);
+  font-size: 0.86rem; font-weight: 600; cursor: pointer;
+  transition: transform 0.15s ease, background 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.streak-tab-btn:hover:not(.active) { transform: translateY(-1px); border-color: var(--line-bright); }
+.streak-tab-btn.active {
+  background: var(--gold-deep); color: #fff; border-color: var(--gold-deep);
+  box-shadow: 0 8px 18px -10px rgba(224, 138, 0, 0.5);
+  animation: optionPick 0.3s ease-out;
+}
+.streak-card {
+  display: flex; align-items: center; gap: 18px;
+  padding: 20px; border-radius: var(--radius-lg); border: 1px solid var(--line); background: var(--panel); margin-bottom: 14px;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.streak-card:hover { transform: translateY(-2px); box-shadow: 0 18px 36px -24px rgba(18,22,42,0.3); }
+.streak-flame {
+  width: 54px; height: 54px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; font-size: 1.5rem;
+  background: linear-gradient(135deg, var(--gold-deep), var(--orange)); color: #fff;
+  animation: pulseFlame 2.2s ease-in-out infinite;
+}
+.streak-card .streak-count { font-family: var(--font-display); font-size: 1.6rem; font-weight: 600; }
+.streak-card .streak-name { font-weight: 700; font-size: 0.95rem; }
+.streak-card .streak-note { font-size: 0.84rem; color: var(--muted); margin-top: 2px; }
+
+/* =========================================================
+   GLIDE COINS + LEADERBOARD
+   ========================================================= */
+
+@keyframes coinSpin {
+  0%, 100% { transform: rotateY(0deg); }
+  50%      { transform: rotateY(360deg); }
+}
+@keyframes glowPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(224, 183, 58, 0.35); }
+  50%      { box-shadow: 0 0 0 8px rgba(224, 183, 58, 0); }
+}
+
+.coins-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 20px;
+  margin: 18px 0;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--line);
+  background: linear-gradient(120deg, rgba(224,183,58,0.14), rgba(224,85,58,0.08));
+  animation: fadeUp 0.5s ease-out both;
+}
+.coins-icon {
+  width: 56px; height: 56px; flex-shrink: 0;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.7rem;
+  background: linear-gradient(135deg, var(--gold-deep), var(--orange));
+  animation: coinSpin 3.4s ease-in-out infinite, glowPulse 2.4s ease-in-out infinite;
+}
+.coins-info { flex: 1; min-width: 0; }
+.coins-label { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--gold-deep); }
+.coins-total { font-family: var(--font-display); font-size: 1.9rem; font-weight: 700; line-height: 1.15; }
+.coins-breakdown { font-size: 0.78rem; color: var(--muted); }
+.coins-rank-btn { flex-shrink: 0; white-space: nowrap; }
+
+.my-rank-banner {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 18px; margin: 18px 0;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--line);
+  background: var(--panel-raise);
+  font-size: 0.9rem;
+  animation: popIn 0.4s ease-out both;
+}
+.my-rank-num {
+  font-family: var(--font-display); font-size: 1.5rem; font-weight: 700;
+  color: var(--gold-deep);
+}
+
+.rank-list { list-style: none; display: flex; flex-direction: column; gap: 10px; margin: 12px 0; }
+.rank-row {
+  display: flex; align-items: center; gap: 14px;
+  padding: 12px 16px;
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  background: var(--panel);
+  animation: fadeUp 0.45s ease-out both;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+.rank-row:hover { transform: translateY(-1px) scale(1.01); box-shadow: 0 14px 30px -20px rgba(18,22,42,0.28); }
+.rank-row.is-top {
+  background: linear-gradient(120deg, rgba(224,183,58,0.12), rgba(224,85,58,0.06));
+  border-color: rgba(224,183,58,0.4);
+}
+.rank-row.is-first {
+  animation: fadeUp 0.45s ease-out both, glowPulse 2.4s ease-in-out 0.5s infinite;
+}
+.rank-row.is-first .rank-pos {
+  display: inline-block;
+  animation: crownBounce 1.6s ease-in-out infinite;
+}
+@keyframes crownBounce {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50%      { transform: translateY(-3px) rotate(-6deg); }
+}
+.rank-row.is-you {
+  border-color: var(--teal-deep);
+  box-shadow: 0 0 0 2px rgba(14,156,184,0.18);
+}
+.rank-pos { font-size: 1.15rem; font-weight: 700; width: 34px; text-align: center; flex-shrink: 0; }
+.rank-name { flex: 1; font-weight: 600; font-size: 0.92rem; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rank-you-tag {
+  display: inline-block; margin-left: 6px; padding: 1px 8px; border-radius: 999px;
+  background: var(--teal-deep); color: #fff; font-size: 0.68rem; font-weight: 700; vertical-align: middle;
+}
+.rank-coins { font-weight: 700; font-size: 0.9rem; flex-shrink: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  .rank-row.is-first, .rank-row.is-first .rank-pos { animation: fadeUp 0.45s ease-out both !important; }
+  .coins-icon { animation: none !important; }
+}
+
+/* =========================================================
+   STEP VIEWS / MISC
+   ========================================================= */
+
+.step-view[hidden] { display: none !important; }
+.loading-note { color: var(--muted); font-size: 0.88rem; padding: 20px 0; }
+
+@media (max-width: 860px) {
+  .page:not(.page--app) .page-card { flex-direction: column; min-height: 0; }
+  .panel-visual { width: 100%; padding: 32px 24px; border-right: none; border-bottom: 1px solid var(--line); }
+  .visual-copy .lede, .visual-copy .perks { display: none; }
+  .dashboard-grid, .swot-grid, .progress-grid { grid-template-columns: 1fr; }
+  .option-grid { grid-template-columns: 1fr 1fr; }
+  .flashcard-grid { grid-template-columns: 1fr; }
+}
